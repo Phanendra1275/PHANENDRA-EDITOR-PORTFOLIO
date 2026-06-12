@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, X, Clock, User } from 'lucide-react';
 import GlowCard from './GlowCard';
@@ -51,14 +51,6 @@ const projects = [
 export default function Portfolio() {
   const [activeFilter, setActiveFilter] = useState('All');
   const [activeVideo, setActiveVideo] = useState(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const filteredProjects = activeFilter === 'All' 
     ? projects 
@@ -192,7 +184,9 @@ export default function Portfolio() {
             onClick={() => setActiveVideo(null)}
           >
             {/* Ambient Background Glow behind Modal */}
-            <div className="absolute w-full max-w-4xl aspect-video bg-accent/10 rounded-custom blur-[80px] opacity-60 z-0 pointer-events-none" />
+            <div className={`absolute w-full bg-accent/10 rounded-custom blur-[80px] opacity-60 z-0 pointer-events-none ${
+              activeVideo.category === 'Short-Form' ? 'max-w-[340px] aspect-[9/16]' : 'max-w-4xl aspect-video'
+            }`} />
 
             {/* Modal Container */}
             <motion.div
@@ -200,7 +194,9 @@ export default function Portfolio() {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 150 }}
-              className="relative w-full max-w-5xl bg-bg-darkest rounded-custom overflow-hidden border border-white/10 shadow-2xl flex flex-col z-10 cursor-default"
+              className={`relative w-full bg-bg-darkest rounded-custom overflow-hidden border border-white/10 shadow-2xl flex flex-col z-10 cursor-default transition-all duration-300 ${
+                activeVideo.category === 'Short-Form' ? 'max-w-[340px] md:max-w-[360px]' : 'max-w-5xl'
+              }`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
@@ -218,7 +214,9 @@ export default function Portfolio() {
               </div>
 
               {/* Video Player */}
-              <div className="relative aspect-video bg-black flex items-center justify-center">
+              <div className={`relative bg-black flex items-center justify-center ${
+                activeVideo.category === 'Short-Form' ? 'aspect-[9/16] w-full animate-fadeIn' : 'aspect-video w-full'
+              }`}>
                 {activeVideo.videoUrl.includes('youtube.com') || activeVideo.videoUrl.includes('youtu.be') ? (
                   <iframe
                     src={`https://www.youtube.com/embed/${(() => {
@@ -233,34 +231,18 @@ export default function Portfolio() {
                     className="w-full h-full"
                   />
                 ) : activeVideo.videoUrl.includes('drive.google.com') ? (
-                  isMobile ? (
-                    <video
-                      src={(() => {
-                        const regExp = /\/file\/d\/([^\/]+)/;
-                        const match = activeVideo.videoUrl.match(regExp);
-                        return match ? `https://drive.google.com/uc?export=download&confirm=t&id=${match[1]}` : '';
-                      })()}
-                      controls
-                      playsInline
-                      autoPlay
-                      className="w-full h-full object-contain bg-black"
-                    >
-                      Your browser does not support the video tag.
-                    </video>
-                  ) : (
-                    <iframe
-                      src={(() => {
-                        const regExp = /\/file\/d\/([^\/]+)/;
-                        const match = activeVideo.videoUrl.match(regExp);
-                        return match ? `https://drive.google.com/file/d/${match[1]}/preview` : '';
-                      })()}
-                      title={activeVideo.title}
-                      frameBorder="0"
-                      allow="autoplay"
-                      allowFullScreen
-                      className="w-full h-full"
-                    />
-                  )
+                  <iframe
+                    src={(() => {
+                      const regExp = /\/file\/d\/([^\/]+)/;
+                      const match = activeVideo.videoUrl.match(regExp);
+                      return match ? `https://drive.google.com/file/d/${match[1]}/preview` : '';
+                    })()}
+                    title={activeVideo.title}
+                    frameBorder="0"
+                    allow="autoplay"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
                 ) : (
                   <video
                     src={activeVideo.videoUrl}
