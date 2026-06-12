@@ -17,7 +17,10 @@ const projects = [
     duration: "30:16",
     thumbnail: theDestinyThumbnail,
     videoUrl: "https://youtu.be/r8Oza1rKjhk",
-    client: "Subbu Kamani"
+    client: "Subbu Kamani",
+    tools: ['Premiere Pro', 'After Effects', 'Audition'],
+    deliverables: ['Cinematic Pacing', 'Dialogue Cleanup', 'Scene Flow', 'Surgical Cuts'],
+    description: "Narrative-heavy short film requiring meticulous scene transitions, dialogue matching, and emotional pacing control."
   },
   {
     id: 2,
@@ -26,7 +29,10 @@ const projects = [
     duration: "0:30",
     thumbnail: reelsEditingImg,
     videoUrl: "https://drive.google.com/file/d/1w4R17n3bg6YW-Ry_pTb4veQO8wTLwPxJ/view?usp=sharing",
-    client: "Social Media Campaign"
+    client: "Social Media Campaign",
+    tools: ['Premiere Pro', 'After Effects', 'CapCut PC'],
+    deliverables: ['Under 2s Hooks', 'Dynamic Subtitles', 'Sound Effects', 'Color Grading'],
+    description: "A social media campaign reel focused on high viewer retention, micro-hooks, and fast-paced sound design syncs."
   },
   {
     id: 4,
@@ -35,7 +41,10 @@ const projects = [
     duration: "0:45",
     thumbnail: reelsShowcaseThumbnail,
     videoUrl: "https://drive.google.com/file/d/1hnZasw2Qm6A58d-cSBa-7TK7ftCUNAqH/view?usp=drive_link",
-    client: "Phani / Creator"
+    client: "Phani / Creator",
+    tools: ['Premiere Pro', 'After Effects', 'DaVinci Resolve'],
+    deliverables: ['Suspense Editing', 'Color Correction', 'Jumpscares Sync', 'Sound Design'],
+    description: "Sound-led horror piece utilizing psychological pacing, eerie color tones, and shock sound effects."
   },
   {
     id: 5,
@@ -44,7 +53,10 @@ const projects = [
     duration: "14:22",
     thumbnail: podcastEditingImg,
     videoUrl: "https://drive.google.com/file/d/13uiFOjNVMj1FXxKoE0y7b3C1GN2skDzm/view?usp=drive_link",
-    client: "Creative Dialogues"
+    client: "Creative Dialogues",
+    tools: ['Premiere Pro', 'Audition'],
+    deliverables: ['Multi-Cam Stitching', 'Audio Level Master', 'Noise Reduction', 'Sparsity Cuts'],
+    description: "High-fidelity corporate and conversational podcast project featuring multi-camera switching and audio restoration."
   }
 ];
 
@@ -161,9 +173,17 @@ export default function Portfolio() {
                         <User size={10} className="text-accent" />
                         {project.client}
                       </p>
-                      <h3 className="font-display text-base md:text-lg font-bold text-white leading-tight">
+                      <h3 className="font-display text-base md:text-lg font-bold text-white leading-tight mb-2">
                         {project.title}
                       </h3>
+                      {/* Tools used list */}
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {project.tools?.map((tool) => (
+                          <span key={tool} className="text-[7.5px] font-mono font-bold uppercase tracking-wider text-white/60 bg-white/5 border border-white/10 px-1.5 py-0.5 rounded">
+                            {tool}
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </GlowCard>
@@ -245,6 +265,39 @@ export default function Portfolio() {
                     className="w-full h-full object-contain"
                   />
                 )}
+              </div>
+
+              {/* Project Details Panel (Case Study) */}
+              <div className="p-5 md:p-6 bg-[#0f1219]/90 border-t border-white/5 flex flex-col md:flex-row gap-6 text-left font-sans">
+                {/* Left: Description & Software used */}
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <h4 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1.5">Project Overview</h4>
+                    <p className="text-xs md:text-sm text-text-secondary leading-relaxed font-light">
+                      {activeVideo.description}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[9px] font-mono text-text-muted uppercase tracking-widest">Editing Suite:</span>
+                    {activeVideo.tools?.map((tool) => (
+                      <span key={tool} className="text-[9px] font-mono font-bold uppercase tracking-wider text-accent bg-accent/5 border border-accent/15 px-2 py-0.5 rounded">
+                        {tool}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right: Key Deliverables */}
+                <div className="w-full md:w-[240px] shrink-0 border-t md:border-t-0 md:border-l border-white/5 pt-4 md:pt-0 md:pl-6">
+                  <h4 className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-2.5">Production Scope</h4>
+                  <div className="flex flex-wrap gap-1.5">
+                    {activeVideo.deliverables?.map((del) => (
+                      <span key={del} className="text-[9px] font-semibold text-white/80 bg-white/[0.03] border border-white/5 px-2.5 py-1 rounded-full">
+                        {del}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
             </motion.div>
           </motion.div>

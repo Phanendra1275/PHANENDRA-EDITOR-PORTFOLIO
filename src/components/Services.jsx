@@ -29,6 +29,29 @@ const services = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12
+    }
+  }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  show: { 
+    opacity: 1, 
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15
+    }
+  }
+};
+
 export default function Services() {
   return (
     <section id="services" className="relative py-24 md:py-32 px-6 md:px-12 bg-bg-darkest overflow-hidden">
@@ -70,20 +93,23 @@ export default function Services() {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-10%" }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+        >
           {services.map((service, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.08 }}
+              variants={cardVariants}
               className="w-full h-full"
             >
               <GlowCard className="p-8 h-full">
                 <div>
                   {/* Icon Container */}
-                  <div className="w-12 h-12 rounded-full bg-white/[0.02] border border-white/5 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-accent/5 group-hover:border-accent/20 transition-all duration-300">
+                  <div className="w-12 h-12 rounded-full bg-white/[0.02] border border-white/5 flex items-center justify-center mb-6 group-hover:scale-115 group-hover:bg-accent/5 group-hover:border-accent/20 transition-all duration-300">
                     {service.icon}
                   </div>
 
@@ -112,7 +138,7 @@ export default function Services() {
               </GlowCard>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>

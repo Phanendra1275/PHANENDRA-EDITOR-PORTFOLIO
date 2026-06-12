@@ -17,6 +17,20 @@ const tools = [
   'Topaz AI',
 ];
 
+const generateWaveformPath = (startX, offset) => {
+  const basePoints = [
+    { dx: 0, dy: 10 }, { dx: 3, dy: -15 }, { dx: 6, dy: 5 }, { dx: 9, dy: -25 },
+    { dx: 12, dy: 15 }, { dx: 15, dy: -5 }, { dx: 18, dy: 20 }, { dx: 21, dy: -10 },
+    { dx: 24, dy: 25 }, { dx: 27, dy: -20 }, { dx: 30, dy: 0 }, { dx: 33, dy: -15 },
+    { dx: 36, dy: 10 }, { dx: 40, dy: 5 }
+  ];
+  return basePoints.map((pt, i) => {
+    const x = startX + pt.dx;
+    const y = 45 + pt.dy - offset;
+    return `${i === 0 ? 'M' : 'L'} ${x},${Math.max(8, Math.min(72, y))}`;
+  }).join(' ');
+};
+
 export default function About() {
   const [colorPos, setColorPos] = useState({ x: 0, y: 0 }); // -1 to 1 range
   const [isGrading, setIsGrading] = useState(false);
@@ -83,6 +97,10 @@ export default function About() {
       window.removeEventListener('touchend', handleGlobalMouseUp);
     };
   }, [isGrading]);
+
+  const redPath = generateWaveformPath(10, colorPos.x * 20);
+  const greenPath = generateWaveformPath(70, -colorPos.y * 20);
+  const bluePath = generateWaveformPath(130, -colorPos.x * 20);
 
   return (
     <section id="about" className="relative py-24 md:py-32 px-6 md:px-12 bg-bg-darker overflow-hidden border-t border-white/[0.02]">
@@ -194,12 +212,12 @@ export default function About() {
 
               </div>
 
-              {/* DaVinci Resolve-style Color Wheel Panel */}
-              <div className="w-full mt-5 bg-black/40 border border-white/5 rounded-lg p-4 flex flex-col sm:flex-row gap-5 items-center">
+              {/* DaVinci Resolve-style Color Wheel & Parade Panel */}
+              <div className="w-full mt-6 bg-[#090B10] border border-white/5 rounded-xl p-5 flex flex-col xl:flex-row gap-6 items-center justify-between">
                 
                 {/* Color Wheel */}
-                <div className="flex flex-col items-center gap-1.5 select-none shrink-0">
-                  <span className="text-[8px] font-mono text-text-secondary uppercase tracking-widest font-bold">Gamma / Midtones</span>
+                <div className="flex flex-col items-center gap-2 select-none shrink-0">
+                  <span className="text-[9px] font-mono text-text-secondary uppercase tracking-[0.2em] font-bold">Gamma / Midtones</span>
                   <div 
                     ref={wheelRef}
                     onMouseDown={handleWheelMouseDown}
@@ -228,9 +246,33 @@ export default function About() {
                     />
                   </div>
                 </div>
+
+                {/* RGB Parade Monitor */}
+                <div className="flex flex-col items-center gap-2 select-none w-full max-w-[200px] shrink-0">
+                  <span className="text-[9px] font-mono text-text-secondary uppercase tracking-[0.2em] font-bold">RGB Parade Monitor</span>
+                  <div className="relative w-full h-24 rounded border border-white/5 bg-[#030406] overflow-hidden flex items-center justify-center p-1 shadow-inner">
+                    {/* Scope CRT grid lines */}
+                    <div className="absolute inset-0 flex flex-col justify-between opacity-10 pointer-events-none p-1">
+                      <div className="w-full h-[1px] bg-white border-dashed border-b" />
+                      <div className="w-full h-[1px] bg-white border-dashed border-b" />
+                      <div className="w-full h-[1px] bg-white border-dashed border-b" />
+                    </div>
+                    <div className="absolute inset-y-0 left-1/3 w-[1px] bg-white/5 pointer-events-none" />
+                    <div className="absolute inset-y-0 right-1/3 w-[1px] bg-white/5 pointer-events-none" />
+                    {/* SVG Waveforms */}
+                    <svg className="w-full h-full" viewBox="0 0 180 80">
+                      {/* Red Channel Path */}
+                      <path d={redPath} fill="none" stroke="#ef4444" strokeWidth="1.2" className="opacity-80" />
+                      {/* Green Channel Path */}
+                      <path d={greenPath} fill="none" stroke="#22c55e" strokeWidth="1.2" className="opacity-80" />
+                      {/* Blue Channel Path */}
+                      <path d={bluePath} fill="none" stroke="#3b82f6" strokeWidth="1.2" className="opacity-80" />
+                    </svg>
+                  </div>
+                </div>
                 
                 {/* Calibration Metrics */}
-                <div className="w-full sm:flex-1 flex flex-col gap-2.5 font-mono">
+                <div className="w-full xl:flex-1 flex flex-col gap-2.5 font-mono">
                   <div className="flex items-center justify-between text-[10px] select-none">
                     <span className="text-text-secondary uppercase">Temp</span>
                     <span className={`font-semibold ${colorPos.x > 0 ? 'text-amber-400' : colorPos.x < 0 ? 'text-cyan-400' : 'text-white'}`}>
