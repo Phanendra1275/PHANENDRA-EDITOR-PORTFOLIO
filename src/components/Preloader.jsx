@@ -178,7 +178,7 @@ export default function Preloader({ onComplete }) {
               className="flex flex-col items-center"
             >
               <h1 className="font-azonix text-3xl sm:text-4xl md:text-5xl tracking-[0.25em] text-white font-normal relative z-10 select-none animate-shine pb-1 leading-none">
-                EDIT BY PHANENDRA
+                PHANENDRA
               </h1>
               
               <motion.div 
