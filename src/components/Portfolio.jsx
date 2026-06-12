@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, X, Clock, User } from 'lucide-react';
 import GlowCard from './GlowCard';
@@ -51,6 +51,14 @@ const projects = [
 export default function Portfolio() {
   const [activeFilter, setActiveFilter] = useState('All');
   const [activeVideo, setActiveVideo] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const filteredProjects = activeFilter === 'All' 
     ? projects 
@@ -225,18 +233,48 @@ export default function Portfolio() {
                     className="w-full h-full"
                   />
                 ) : activeVideo.videoUrl.includes('drive.google.com') ? (
-                  <iframe
-                    src={(() => {
-                      const regExp = /\/file\/d\/([^\/]+)/;
-                      const match = activeVideo.videoUrl.match(regExp);
-                      return match ? `https://drive.google.com/file/d/${match[1]}/preview` : '';
-                    })()}
-                    title={activeVideo.title}
-                    frameBorder="0"
-                    allow="autoplay"
-                    allowFullScreen
-                    className="w-full h-full"
-                  />
+                  isMobile ? (
+                    <div className="relative flex flex-col items-center justify-center p-6 text-center h-full w-full bg-[#030406] overflow-hidden">
+                      {/* Blurred Thumbnail Background */}
+                      <img 
+                        src={activeVideo.thumbnail} 
+                        alt="" 
+                        className="absolute inset-0 w-full h-full object-cover filter blur-md opacity-20 scale-110 pointer-events-none"
+                      />
+                      <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
+                      
+                      {/* Content Overlay */}
+                      <div className="relative z-10 flex flex-col items-center">
+                        <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center mb-4 border border-accent/20 shadow-lg shadow-accent/5">
+                          <Play size={24} className="text-accent fill-accent/20 ml-1 animate-pulse" />
+                        </div>
+                        <p className="text-text-secondary text-xs sm:text-sm max-w-xs mb-5 font-mono">
+                          Google Drive videos play best in full screen or via the native app on mobile devices.
+                        </p>
+                        <a
+                          href={activeVideo.videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-5 py-2.5 bg-accent text-bg-darkest rounded-full font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-accent/25 flex items-center gap-1.5 cursor-pointer"
+                        >
+                          Open & Play Video ↗
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <iframe
+                      src={(() => {
+                        const regExp = /\/file\/d\/([^\/]+)/;
+                        const match = activeVideo.videoUrl.match(regExp);
+                        return match ? `https://drive.google.com/file/d/${match[1]}/preview` : '';
+                      })()}
+                      title={activeVideo.title}
+                      frameBorder="0"
+                      allow="autoplay"
+                      allowFullScreen
+                      className="w-full h-full"
+                    />
+                  )
                 ) : (
                   <video
                     src={activeVideo.videoUrl}
